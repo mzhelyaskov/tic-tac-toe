@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col-md-8">
+        <table class="table table-striped">
+            <tr ng-repeat="game in availableGames">
+                <td>{{game.id}}</td>
+                <td>{{game.login}}</td>
+                <td>{{game.locked ? 'LOCKED' : 'OPEN'}}</td>
+                <td><span class="glyphicon glyphicon-plus"></span></td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-md-4">
+        <ng-form name="newGameForm">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input id="password" class="form-control" type="password"
+                       placeholder="Game password for private game"
+                       ng-model="game.password">
+            </div>
+            <div class="form-group">
+                <label for="size">Size: </label>
+                <select name="size" id="size" ng-model="game.size" class="form-control">
+                    <option value="9">9 x 9</option>
+                    <option value="12">12 x 12</option>
+                    <option value="15">15 x 15</option>
+                    <option value="15">17 x 17</option>
+                    <option value="15">21 x 21</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-default" ng-click="createNewGame(game)">Create game</button>
+            </div>
+        </ng-form>
+    </div>
+</div>

@@ -1,0 +1,114 @@
+#game-field {
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-size: 25px;
+}
+
+#game-field tr td {
+    border: 1px solid #604242;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+    height: 30.4px;
+    width: 30.4px;
+}
+
+.g-tab-content {
+    border: 1px solid #e1e1e8;
+    border-top: 0;
+    padding: 5px;
+}
+
+.panel {
+    text-align: center;
+    font-weight: bold;
+}
+
+.panel .panel-body {
+    padding: 5px;
+}
+
+#game-size {
+    width: 130px;
+}
+
+.navbar-default .navbar-brand {
+    color: #fff;
+}
+
+.navbar-default .navbar-brand:hover {
+    color: #e7e7e7;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: #fff;
+}
+
+.navbar {
+   background-color: #337ab7;
+}
+
+.avatar-logo {
+    margin-right: -15px;
+}
+
+.avatar {
+    width: 25px;
+}
+
+.chat-messages-block {
+    position: relative;
+    height: 400px;
+}
+
+.chat-message {
+    border-radius: 5px;
+    padding: 5px;
+    color: #000000;
+}
+
+.my-messege {
+    background-color: #d0effb;
+    margin: 0 60px 5px 60px;
+}
+
+.oponent-messege {
+    background-color: #e8e8e8;
+    margin: 0 100px 5px 20px;
+}
+
+
+.chat-time {
+    color: #949494;
+    font-size: 0.8em;
+}
+
+
+.chat-message-container {
+    position: relative;
+}
+
+.chat-oponent-messege-container {
+    position: relative;
+}
+
+.chat-avatar {
+    position: absolute;
+    left: 10px;
+    border: 1px solid #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.chat-time {
+    position: absolute;
+    right: 12px;
+    top: 5px;
+}
+
+#typing-field {
+    margin-bottom: 10px;
+}
+
+

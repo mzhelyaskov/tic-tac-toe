@@ -1,0 +1,119 @@
+<script src="gameFieldCtrl.js"></script>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="well">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="size">Size: </label>
+                        <select name="size" id="size" ng-model="gameSize" class="form-control">
+                            <option value="9">9 x 9</option>
+                            <option value="12">12 x 12</option>
+                            <option value="15">15 x 15</option>
+                            <option value="15">17 x 17</option>
+                            <option value="15">21 x 21</option>
+                        </select>
+                    </div>
+                    <button id="field-creator" class="btn btn-default" type="button">CREATE</button>
+                    <button id="reset-button" class="btn btn-default pull-right" type="button">RESET</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <span>X-SCORE</span>
+                        </div>
+                        <div class="panel-footer">
+                            <span id="x-score">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <span>O-SCORE</span>
+                        </div>
+                        <div class="panel-footer">
+                            <span id="o-score">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-7">
+            <div id="game-field-container">
+                <table id="game-field">
+                    <tr ng-repeat="rows in gameBoard">
+                        <td ng-repeat="cell in rows"
+                            data-row="{{cell.row}}"
+                            data-col="{{cell.col}}"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Chat</a>
+                </li>
+                <li role="presentation">
+                    <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">History</a>
+                </li>
+                <li role="presentation">
+                    <a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Prefernces</a>
+                </li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content g-tab-content">
+                <div role="tabpanel" class="tab-pane active" id="Chat">
+                    <div class="chat-controls">
+                        <div class="input-group well" id="typing-field">
+                            <input type="text" class="form-control" placeholder="Enter Your messege">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">Send</button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="chat-messages-block">
+                        <div class="chat-message-container">
+                            <img class="chat-avatar" src="images/profile-photo.jpg">
+                            <div class="chat-message-container">
+                                <div class="chat-message my-messege">Hey. You juset reminded me my childhood. A
+                                    speacially this game. I love it
+                                </div>
+                                <time class="chat-time">11:13</time>
+                            </div>
+                            <div class="chat-message-container">
+                                <div class="chat-message my-messege">
+                                    Message 1 or maybe 2, I don't know honestly.<br>
+                                    Lorem ipsum dollar ya lyublyu.
+                                </div>
+                                <time class="chat-time">11:14</time>
+                            </div>
+                        </div>
+                        <div class="chat-oponent-messege-container">
+                            <div class="chat-message-container">
+                                <div class="chat-message oponent-messege">What the heck Mark is coding?</div>
+                                <time class="chat-time">11:13</time>
+                            </div>
+                            <div class="chat-oponent-messege-container">
+                                <div class="chat-message oponent-messege">
+                                    You know, sometimes he does well, but now..
+                                </div>
+                                <time class="chat-time">11:14</time>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="History">...</div>
+                <div role="tabpanel" class="tab-pane" id="Preferences">...</div>
+            </div>
+        </div>
+    </div>
+</div>
