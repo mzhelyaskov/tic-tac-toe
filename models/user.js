@@ -1,18 +1,32 @@
-const uuid = require('uuid/v1');
+var userUtils = require('../utils/userUtils');
 
-var userList = {};
-
-var User = function (username) {
-    this.id = uuid();
-    this.username = username;
-    userList[username] = this;
+module.exports = function(sequelize, DataTypes) {
+    var User = sequelize.define('User',
+        {
+            username: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                unique: true,
+                validate: {
+                    len: [2],
+                    is: /^[a-z0-9]+$/i
+                }
+            }
+        },
+        {
+            freezeTableName: true,
+            underscored: true,
+            classMethods: {
+                authorize: function(username, callback) {
+                    User.findOrCreate({where: {username: username}})
+                        .spread(function (user, created) {
+                            console.log(user);
+                            console.log(created);
+                            callback(null, user);
+                        });
+                }
+            }
+        }
+    );
+    return User;
 };
-
-User.findOne = function (username) {
-    return userList[username] || null;
-};
-
-exports.User = User;
-
-
-

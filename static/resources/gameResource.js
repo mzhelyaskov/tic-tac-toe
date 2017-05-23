@@ -10,7 +10,7 @@ wsRoomApp.factory('Games', function ($resource) {
         },
         query: {
             method: 'GET',
-            isArray: false
+            isArray: true
         }
     });
 });

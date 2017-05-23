@@ -4,7 +4,7 @@ wsRoomApp.controller('gameBoardCtrl', function ($scope, $socket, $location, $rou
 
     var gameId = $routeParams['id'];
 
-    $socket.emit('games:connect', gameId, function (gameBoard) {
-        $scope.gameBoard = gameBoard;
+    $socket.emit('games:connect', gameId, function (data) {
+        $scope.gameBoard = data.gameBoard;
     });
 });
