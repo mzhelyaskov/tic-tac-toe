@@ -2,6 +2,7 @@ var wsRoomApp = angular.module('ws_room', [
     'ngResource',
     'ngRoute'
 ])
+.constant('baseUrl', '/api')
 .config(function ($routeProvider, $locationProvider) {
     $locationProvider.html5Mode(true);
     $routeProvider.

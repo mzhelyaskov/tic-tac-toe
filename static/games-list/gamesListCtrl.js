@@ -18,4 +18,8 @@ wsRoomApp.controller('gamesListCtrl', function ($scope, $socket, $location, Game
             $location.path('/games/' + params.gameId);
         });
     };
+
+    $scope.connectToGame = function (gameId) {
+        $location.path('/games/' + gameId);
+    }
 });

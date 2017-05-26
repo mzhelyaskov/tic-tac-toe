@@ -1,5 +1,5 @@
-wsRoomApp.factory('Games', function ($resource) {
-    return $resource('/games/:id:controller', {id: '@id'}, {
+wsRoomApp.factory('Games', function ($resource, baseUrl) {
+    return $resource(baseUrl + '/games/:controller/:id', {id: '@id'}, {
         create: {
             method: 'POST',
             params: {controller: 'create'}
@@ -7,6 +7,12 @@ wsRoomApp.factory('Games', function ($resource) {
         reset: {
             method: 'GET',
             params: {controller: 'reset'}
+        },
+        connect: {
+            method: 'GET',
+            params: {
+                controller: 'connect'
+            }
         },
         query: {
             method: 'GET',

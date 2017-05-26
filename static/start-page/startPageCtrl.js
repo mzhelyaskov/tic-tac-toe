@@ -10,7 +10,7 @@ wsRoomApp.controller('startPageCtrl', function ($scope, $location, $rootScope, U
             UserService.login({username: user.username})
                 .then(
                     function (user) {
-                        angular.copy(user, $scope.loggedInUser);
+                        $scope.$emit('userUpdate', user);
                         $location.path('/games')
                     },
                     function (errorMessage) {

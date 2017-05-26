@@ -5,7 +5,9 @@
                 <td>{{game.id}}</td>
                 <td>{{game.login}}</td>
                 <td>{{game.locked ? 'LOCKED' : 'AVAILABLE'}}</td>
-                <td><span class="glyphicon glyphicon-plus"></span></td>
+                <td>
+                    <span class="glyphicon glyphicon-plus" ng-click="connectToGame(game.id)"></span>
+                </td>
             </tr>
         </table>
     </div>

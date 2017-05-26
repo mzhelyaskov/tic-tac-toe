@@ -16,9 +16,9 @@
                 <li class="active"><a href="#">Game board</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li ng-if="loggedInUser.id" class="active"><a href="#">{{loggedInUser.username}}</a></li>
-                <li ng-if="loggedInUser.id" class="active"><a href="/logout">Logout</a></li>
-                <li ng-if="!loggedInUser.id" class="active"><a href="/login">Login</a></li>
+                <li ng-if="user" class="active"><a href="#">{{user.username}}</a></li>
+                <li ng-if="user" class="active"><a href="/logout">Logout</a></li>
+                <li ng-if="!user" class="active"><a href="/login">Login</a></li>
             </ul>
         </div>
     </div>

@@ -49,7 +49,9 @@
             <div id="game-field-container">
                 <table id="game-field">
                     <tr ng-repeat="rows in gameBoard">
-                        <td ng-repeat="cell in rows" data-row="{{cell.row}}" data-col="{{cell.col}}">cell.value</td>
+                        <td ng-repeat="cell in rows" ng-click="turn(cell)">
+                            {{cell.value}}
+                        </td>
                     </tr>
                 </table>
             </div>

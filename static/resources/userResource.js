@@ -1,5 +1,5 @@
-wsRoomApp.factory('Users', function ($resource) {
-    return $resource('/users/:id:controller', {}, {
+wsRoomApp.factory('Users', function ($resource, baseUrl) {
+    return $resource(baseUrl + '/users/:id:controller', {}, {
         login: {
             method: 'POST',
             params: {

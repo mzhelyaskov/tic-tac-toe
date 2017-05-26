@@ -45,7 +45,7 @@ app.use(express.static(path.join(__dirname, '/static')));
 
 
 /*************** API v.1 ******************/
-app.get('/games', function (req, res) {
+app.get('/api/games', function (req, res) {
     var openGames = [];
     for (var gameId in games) {
         if (!games.hasOwnProperty(gameId)) continue;
@@ -54,13 +54,13 @@ app.get('/games', function (req, res) {
     res.json(openGames);
 });
 
-app.get('/games/:id', function (req, res) {
+app.get('/api/games/:id', function (req, res) {
     var gameId = req.params.id;
     var game = games[gameId];
     res.json(game);
 });
 
-app.post('/games/create', function (req, res) {
+app.post('/api/games/create', function (req, res) {
     var gameParams = req.body;
     var game = new Game({
         locked: !!gameParams.password,
@@ -71,7 +71,7 @@ app.post('/games/create', function (req, res) {
     res.json({gameId: game.id});
 });
 
-app.post('/users/login', function (req, res, next) {
+app.post('/api/users/login', function (req, res, next) {
     User.authorize(req.body.username, function (err, user) {
         if (err) {
             if (typeof err === 'string') {
@@ -87,8 +87,13 @@ app.post('/users/login', function (req, res, next) {
     });
 });
 
-app.get('/users/logged-in', function (req, res) {
-    res.json(req.session.loggedInUser);
+app.get('/api/users/logged-in', function (req, res) {
+    loadUser(req.session.userId, function (err, user) {
+        res.json({
+            id: user.id,
+            username: user.username
+        });
+    });
 });
 /*************** END API v.1 ******************/
 
@@ -139,16 +144,14 @@ function crateMatrix(row, col) {
 function Cell(row, col) {
     this.row = row;
     this.col = col;
+    this.value = '';
 }
 
-function Player(params) {
-    this.id = uuid();
-    this.login = params.login;
+function Player(user, symbol) {
+    this.id = user.id;
+    this.login = user.username;
+    this.symbol = symbol;
 }
-
-Player.prototype.setIcon = function (iconPath) {
-    this.iconPath = iconPath;
-};
 
 function Message(params) {
     this.player = params.player;
@@ -163,15 +166,22 @@ var GAME_STATUS = {
 
 function Game(params) {
     this.id = uuid();
+    this.x = 'X';
+    this.o = 'O';
     this.status = GAME_STATUS.OPEN;
     this.locked = !!params.password;
     this.password = params.password;
     this.board = createSquareMatrix(params.size || 15);
+    this.nextTurn = this.x;
     this.players = [];
     this.messages = [];
 }
 
-Game.prototype.isAllPlaerExists = function () {
+Game.prototype.changeTurn = function () {
+    this.nextTurn = this.nextTurn === this.x ? this.o : this.x;
+};
+
+Game.prototype.isAllPlayerExists = function () {
     return this.players.length >= 2;
 };
 
@@ -263,16 +273,31 @@ io.on('connection', function (socket) {
 
     socket.on('games:connect', function (gameId, callback) {
         var game = games[gameId];
+        if (!game) {
+            throw new Error('Game undefined');
+        }
         if (game.status === GAME_STATUS.CLOSED) {
             throw new Error('Game is full');
         }
-        game.addPlayer(new Player(user.username));
+        game.addPlayer(new Player(user, game.nextTurn));
+        game.changeTurn();
         socket.join(gameId);
-        if (game.isAllPlaerExists()) {
-            game.changeState(GAME_STATUS.CLOSED);
+        if (game.isAllPlayerExists()) {
+            game.changeStatus(GAME_STATUS.CLOSED);
         }
-        socket.broadcast.emit('games:createdNew', game);
+        if (game.players.length === 1) {
+            socket.broadcast.emit('games:createdNew', game);
+        }
         callback({gameBoard: game.board});
+    });
+
+    socket.on('games:turn', function (data, callback) {
+        var game = games[data.gameId];
+        var cell = game.board[data.cell.row][data.cell.col];
+        cell.value = game.nextTurn;
+        game.changeTurn();
+        callback({gameBoard: game.board});
+        socket.broadcast.to(data.gameId).emit('games:turn', {gameBoard: game.board});
     });
 });
 

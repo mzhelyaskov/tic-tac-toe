@@ -9,4 +9,11 @@ wsRoomApp.service('UserService', function (Users, $q) {
                 return data.user;
             });
     };
+
+    this.getLoggedIn = function () {
+        return Users.getLoggedIn().$promise
+            .then(function (user) {
+                return user;
+            });
+    };
 });
