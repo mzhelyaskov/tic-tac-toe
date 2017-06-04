@@ -1,7 +1,7 @@
-<div class="row">
+<div ng-if="!waitingForOpponents" class="row">
     <div class="col-md-8">
         <table class="table table-striped">
-            <tr ng-repeat="game in availableGames">
+            <tr ng-repeat="game in games">
                 <td>{{game.id}}</td>
                 <td>{{game.login}}</td>
                 <td>{{game.locked ? 'LOCKED' : 'AVAILABLE'}}</td>
@@ -11,27 +11,38 @@
             </tr>
         </table>
     </div>
-    <div class="col-md-4">
+    <div  class="col-md-4">
+        <div ng-if="message" class="alert alert-danger col-sm-offset-2 col-sm-10" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{message}}
+        </div>
         <ng-form name="newGameForm">
             <div class="form-group">
                 <label for="password">Password</label>
                 <input id="password" class="form-control" type="password"
                        placeholder="Game password for private game"
-                       ng-model="game.password">
+                       ng-model="newGameParams.password">
             </div>
             <div class="form-group">
                 <label for="size">Size: </label>
-                <select name="size" id="size" ng-model="game.size" class="form-control">
+                <select name="size" id="size" ng-model="newGameParams.size" class="form-control">
                     <option value="9">9 x 9</option>
                     <option value="12">12 x 12</option>
                     <option value="15">15 x 15</option>
-                    <option value="15">17 x 17</option>
-                    <option value="15">21 x 21</option>
+                    <option value="17">17 x 17</option>
+                    <option value="21">21 x 21</option>
                 </select>
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-default" ng-click="createNewGame(game)">Create game</button>
+                <button type="submit" class="btn btn-default" ng-click="createNewGame()">Create game</button>
             </div>
         </ng-form>
+    </div>
+</div>
+<div ng-if="waitingForOpponents" class="row">
+    <div class="col-md-12">
+        <h2>Waiting for opponents...</h2>
     </div>
 </div>

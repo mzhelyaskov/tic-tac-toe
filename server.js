@@ -1,6 +1,7 @@
 const uuid = require('uuid/v1');
 var async = require('async');
 var path = require('path');
+var numberUtils = require('./utils/numberUtils');
 var express = require('express');
 var session = require('express-session');
 var SequelizeStore = require('connect-session-sequelize')(session.Store);
@@ -13,6 +14,7 @@ var io = require('socket.io')(http);
 var sequelize = require('./models').sequelize;
 var User = require('./models').User;
 var Session = require('./models').Session;
+
 
 var sessionStore = new SequelizeStore({
     db: sequelize,
@@ -49,26 +51,14 @@ app.get('/api/games', function (req, res) {
     var openGames = [];
     for (var gameId in games) {
         if (!games.hasOwnProperty(gameId)) continue;
-        openGames.push(games[gameId]);
+        openGames.push(new GameDto(games[gameId]));
     }
     res.json(openGames);
 });
 
 app.get('/api/games/:id', function (req, res) {
     var gameId = req.params.id;
-    var game = games[gameId];
-    res.json(game);
-});
-
-app.post('/api/games/create', function (req, res) {
-    var gameParams = req.body;
-    var game = new Game({
-        locked: !!gameParams.password,
-        password: gameParams.password,
-        size: gameParams.size
-    });
-    games[game.id] = game;
-    res.json({gameId: game.id});
+    res.json(new GameDto(games[gameId]));
 });
 
 app.post('/api/users/login', function (req, res, next) {
@@ -88,7 +78,8 @@ app.post('/api/users/login', function (req, res, next) {
 });
 
 app.get('/api/users/logged-in', function (req, res) {
-    loadUser(req.session.userId, function (err, user) {
+    User.findById(req.session.userId).then(function (user) {
+        user = user || {} ;
         res.json({
             id: user.id,
             username: user.username
@@ -116,7 +107,13 @@ app.all("/*", function(req, res) {
 
 
 
-
+function GameDto(game) {
+    this.id = game.id;
+    this.owner = game.owner.username;
+    this.size = game.size;
+    this.locked = game.locked;
+    this.board = game.board;
+}
 
 
 
@@ -147,11 +144,17 @@ function Cell(row, col) {
     this.value = '';
 }
 
-function Player(user, symbol) {
+function Player(user) {
     this.id = user.id;
-    this.login = user.username;
-    this.symbol = symbol;
+    this.user = user;
+    this.symbol = null;
+    this.game = null;
+    this.rival = null;
 }
+
+Player.prototype.setRival = function (rival) {
+    this.rival = rival;
+};
 
 function Message(params) {
     this.player = params.player;
@@ -166,23 +169,28 @@ var GAME_STATUS = {
 
 function Game(params) {
     this.id = uuid();
-    this.x = 'X';
-    this.o = 'O';
+    this.owner = params.owner;
     this.status = GAME_STATUS.OPEN;
     this.locked = !!params.password;
     this.password = params.password;
     this.board = createSquareMatrix(params.size || 15);
-    this.nextTurn = this.x;
-    this.players = [];
+    this.symbols = ['X', 'O'].sort(function randomSort() {
+        return Math.random() - 0.5;
+    });
+    this.players = {};
+    this.nextTurn = null;
     this.messages = [];
 }
 
-Game.prototype.changeTurn = function () {
-    this.nextTurn = this.nextTurn === this.x ? this.o : this.x;
-};
-
-Game.prototype.isAllPlayerExists = function () {
-    return this.players.length >= 2;
+Game.prototype.turn = function (playerId, row, col) {
+    var cell = this.board[row][col];
+    var player = this.players[playerId];
+    if (player !== this.nextTurn || cell.value) {
+        return false;
+    }
+    cell.value = player.symbol;
+    this.nextTurn = player.rival;
+    return true;
 };
 
 Game.prototype.addMessage = function (player, text) {
@@ -193,11 +201,25 @@ Game.prototype.addMessage = function (player, text) {
 };
 
 Game.prototype.addPlayer = function (player) {
-    this.players.push(player);
+    player.game = this;
+    player.symbol = this.symbols.pop();
+    this.players[player.id] = player;
 };
 
 Game.prototype.changeStatus = function (status) {
     this.status = status;
+};
+
+Game.prototype.setRivalReferences = function () {
+    var players = [];
+    for (var key in this.players) {
+        players.push(this.players[key]);
+    }
+    //TODO add asserts length 2
+    var player1 = players[0];
+    var player2 = players[1];
+    player1.setRival(player2);
+    player2.setRival(player1);
 };
 
 
@@ -271,33 +293,45 @@ io.use(function(socket, next) {
 io.on('connection', function (socket) {
     var user = socket.handshake.user;
 
+    socket.on('games:create', function (params, callback) {
+        var game = new Game({
+            owner: user,
+            locked: !!params.password,
+            password: params.password,
+            size: params.size
+        });
+        var player = new Player(user);
+        game.addPlayer(player);
+        game.nextTurn = player;
+        games[game.id] = game;
+        socket.join(game.id);
+        socket.broadcast.emit('games:createdNew', new GameDto(game));
+        callback();
+    });
+
     socket.on('games:connect', function (gameId, callback) {
         var game = games[gameId];
         if (!game) {
-            throw new Error('Game undefined');
+            callback({message: "There are no game with this ID: " + gameId});
+            return;
         }
         if (game.status === GAME_STATUS.CLOSED) {
-            throw new Error('Game is full');
+            callback({message: 'Game already is full'});
+            return;
         }
-        game.addPlayer(new Player(user, game.nextTurn));
-        game.changeTurn();
+        game.addPlayer(new Player(user));
+        game.setRivalReferences();
         socket.join(gameId);
-        if (game.isAllPlayerExists()) {
-            game.changeStatus(GAME_STATUS.CLOSED);
-        }
-        if (game.players.length === 1) {
-            socket.broadcast.emit('games:createdNew', game);
-        }
-        callback({gameBoard: game.board});
+        game.changeStatus(GAME_STATUS.CLOSED);
+        io.sockets.in(game.id).emit('games:start', {gameId: game.id});
     });
 
     socket.on('games:turn', function (data, callback) {
         var game = games[data.gameId];
-        var cell = game.board[data.cell.row][data.cell.col];
-        cell.value = game.nextTurn;
-        game.changeTurn();
-        callback({gameBoard: game.board});
-        socket.broadcast.to(data.gameId).emit('games:turn', {gameBoard: game.board});
+        if (game.turn(data.playerId, data.row, data.col)) {
+            socket.broadcast.to(game.id).emit('games:turn', {board: game.board});
+            callback({board: game.board});
+        }
     });
 });
 

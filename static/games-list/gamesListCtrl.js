@@ -1,25 +1,28 @@
 wsRoomApp.controller('gamesListCtrl', function ($scope, $socket, $location, Games) {
-    $scope.game = {
+
+    $scope.games = Games.query();
+    $scope.waitingForOpponents = false;
+    $scope.newGameParams= {
         size: '15'
     };
 
     $socket.on('games:createdNew', function (newGame) {
-        $scope.availableGames[newGame.id] = newGame;
+        $scope.games.push(newGame);
     });
 
-    $scope.availableGames = Games.query();
+    $socket.on('games:start', function (data) {
+        $location.path('/games/' + data.gameId);
+    });
 
-    $scope.createNewGame = function (game) {
-        var gameParams = {
-            password: game.password,
-            size: +game.size
-        };
-        Games.create(gameParams, function (params) {
-            $location.path('/games/' + params.gameId);
+    $scope.createNewGame = function () {
+        $socket.emit('games:create', $scope.newGameParams, function () {
+            $scope.waitingForOpponents = true;
         });
     };
 
     $scope.connectToGame = function (gameId) {
-        $location.path('/games/' + gameId);
-    }
+        $socket.emit('games:connect', gameId, function (data) {
+            $scope.message = data.message;
+        });
+    };
 });

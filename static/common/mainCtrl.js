@@ -2,7 +2,7 @@ wsRoomApp.controller('mainCtrl', function ($scope, $rootScope, $location, UserSe
     UserService.getLoggedIn().then(function (user) {
         if (user.id) {
             $scope.user = user;
-            $location.path('/games');
+            // $location.path('/games');
         }
     });
 
