@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node ./server.js"
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "4.1.x"
   },
   "dependencies": {
     "async": "^2.4.1",
