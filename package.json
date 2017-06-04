@@ -6,7 +6,8 @@
     "start": "node server.js"
   },
   "engines": {
-    "node": "4.1.x"
+    "node": "4.1.x",
+    "npm": "4.3.0"
   },
   "dependencies": {
     "async": "^2.4.1",
