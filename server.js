@@ -43,7 +43,7 @@ app.use(session({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(require('./middleware/loadUser'));
-app.use(express.static(path.join(__dirname, '/static')));
+// app.use(express.static(path.join(__dirname, '/static')));
 
 
 /*************** API v.1 ******************/
