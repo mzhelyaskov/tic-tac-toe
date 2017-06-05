@@ -28,11 +28,11 @@
     }
   },
   "production": {
-    "username": "root",
-    "password": "root",
-    "database": "???",
+    "username": "sql11178536",
+    "password": "cznmKxTnY1",
+    "database": "sql11178536",
     "options": {
-      "host": "127.0.0.1",
+      "host": "sql11.freemysqlhosting.net",
       "dialect": "mysql",
       "pool": {
         "max": 5,
