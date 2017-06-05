@@ -1,24 +1,11 @@
 {
   "development": {
-    "username": "root",
-    "password": "root",
-    "database": "ws-game",
+    "username": "sql11178536",
+    "password": "cznmKxTnY1",
+    "database": "sql11178536",
+    "host": "sql11.freemysqlhosting.net",
     "options": {
-      "host": "127.0.0.1",
-      "dialect": "mysql",
-      "pool": {
-        "max": 5,
-        "min": 0,
-        "idle": 10000
-      }
-    }
-  },
-  "test": {
-    "username": "root",
-    "password": "root",
-    "database": "???",
-    "options": {
-      "host": "127.0.0.1",
+      "host": "sql11.freemysqlhosting.net",
       "dialect": "mysql",
       "pool": {
         "max": 5,
