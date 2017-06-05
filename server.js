@@ -15,7 +15,6 @@ var sequelize = require('./models').sequelize;
 var User = require('./models').User;
 var Session = require('./models').Session;
 
-console.log(process.env.NODE_ENV);
 
 var sessionStore = new SequelizeStore({
     db: sequelize,
