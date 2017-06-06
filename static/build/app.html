@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html ng-app="ws_room">
+<head lang="en">
+    <meta charset="UTF-8">
+    <base href="/">
+    <title>GAME ROOMS</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="style.min.css">
+    <script src="vendor.min.js"></script>
+    <script src="app.min.js"></script>
+</head>
+<body ng-controller="mainCtrl">
+    <nav-bar></nav-bar>
+    <div class="container">
+        <ng-view></ng-view>
+    </div>
+</body>
+</html>

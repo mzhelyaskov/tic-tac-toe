@@ -14,7 +14,9 @@ var io = require('socket.io')(http);
 var sequelize = require('./models').sequelize;
 var User = require('./models').User;
 var Session = require('./models').Session;
+var config = require('./config');
 
+console.log('static path: ' + path.join(__dirname, config.static));
 
 var sessionStore = new SequelizeStore({
     db: sequelize,
@@ -43,7 +45,11 @@ app.use(session({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(require('./middleware/loadUser'));
-app.use(express.static(__dirname + '/static'));
+app.use(express.static(path.join(__dirname, config.static)));
+
+app.get("/*", function (req, res) {
+    res.sendFile("app.html", {root: path.join(__dirname, config.static)});
+});
 
 /*************** API v.1 ******************/
 app.get('/api/games', function (req, res) {
@@ -78,7 +84,7 @@ app.post('/api/users/login', function (req, res, next) {
 
 app.get('/api/users/logged-in', function (req, res) {
     User.findById(req.session.userId).then(function (user) {
-        user = user || {} ;
+        user = user || {};
         res.json({
             id: user.id,
             username: user.username
@@ -86,22 +92,6 @@ app.get('/api/users/logged-in', function (req, res) {
     });
 });
 /*************** END API v.1 ******************/
-
-app.all("/*", function(req, res) {
-    res.sendFile("app.html", {root: __dirname + '/static/'});
-});
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -113,13 +103,6 @@ function GameDto(game) {
     this.locked = game.locked;
     this.board = game.board;
 }
-
-
-
-
-
-
-
 
 
 function createSquareMatrix(size) {
@@ -222,22 +205,6 @@ Game.prototype.setRivalReferences = function () {
 };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 var games = {};
 
 function loadUser(userId, callback) {
@@ -258,23 +225,23 @@ function loadSession(sid, callback) {
     });
 }
 
-io.use(function(socket, next) {
+io.use(function (socket, next) {
     var handshake = socket.handshake;
     async.waterfall([
-        function(callback) {
+        function (callback) {
             handshake.cookies = cookie.parse(socket.request.headers.cookie);
             var signedSid = handshake.cookies['connect.sid'];
             var sid = cookieParser.signedCookie(signedSid, 'keyboard cat');
             loadSession(sid, callback);
         },
-        function(session, callback) {
+        function (session, callback) {
             if (!session) {
                 callback(new Error('There are no session'));
             }
             handshake.session = session;
             loadUser(session.userId, callback);
         },
-        function(user, callback) {
+        function (user, callback) {
             if (!user) {
                 callback(new Error('There are no user'));
             }
@@ -338,12 +305,6 @@ var port = process.env.PORT || 5000;
 http.listen(port, function () {
     console.log('listening on port: ' + port);
 });
-
-
-
-
-
-
 
 
 //var waitRoom = 'wait_room';

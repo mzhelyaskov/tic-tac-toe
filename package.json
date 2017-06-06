@@ -21,7 +21,22 @@
     "mysql2": "^1.2.0",
     "node-static": "^0.7.9",
     "sequelize": "^3.30.4",
+    "serve-static": "^1.12.3",
     "socket.io": "^1.7.4",
     "uuid": "^3.0.1"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-angular-templates": "^1.1.0",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-cssmin": "^2.2.0",
+    "grunt-contrib-uglify": "^3.0.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-filerev": "^2.3.1",
+    "grunt-ng-annotate": "^3.0.0",
+    "grunt-usemin": "^3.1.1",
+    "matchdep": "^1.0.1"
   }
 }
