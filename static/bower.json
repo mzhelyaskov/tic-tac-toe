@@ -1,0 +1,24 @@
+{
+  "name": "tic-tac-toe",
+  "homepage": "tictactoe-ws.herokuapp.com",
+  "authors": [
+    "Mykhailo Zheliaskov <mykhailo.zheliaskov@decerto.pl>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "1.6.4",
+    "bootstrap": "^3.3.7",
+    "lodash": "^4.17.4",
+    "jquery": "^3.2.1"
+  }
+}
