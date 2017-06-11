@@ -238,6 +238,7 @@ io.use(function (socket, next) {
         function (session, callback) {
             if (!session) {
                 callback(new Error('There are no session'));
+                return;
             }
             handshake.session = session;
             loadUser(session.userId, callback);
@@ -245,6 +246,7 @@ io.use(function (socket, next) {
         function (user, callback) {
             if (!user) {
                 callback(new Error('There are no user'));
+                return;
             }
             handshake.user = user;
             callback(null);
