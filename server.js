@@ -47,10 +47,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(require('./middleware/loadUser'));
 app.use(express.static(path.join(__dirname, config.static)));
 
-app.get("/*", function (req, res) {
-    res.sendFile("app.html", {root: path.join(__dirname, config.static)});
-});
-
 /*************** API v.1 ******************/
 app.get('/api/games', function (req, res) {
     var openGames = [];
@@ -92,6 +88,11 @@ app.get('/api/users/logged-in', function (req, res) {
     });
 });
 /*************** END API v.1 ******************/
+
+app.get("/*", function (req, res) {
+    res.sendFile("app.html", {root: path.join(__dirname, config.static)});
+});
+
 
 
 

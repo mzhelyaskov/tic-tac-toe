@@ -1,36 +1,32 @@
 {
   "development": {
     "static": "static",
-    "database": {
-      "username": "root",
-      "password": "root",
-      "database": "ws-game",
+    "username": "root",
+    "password": "root",
+    "database": "ws-game",
+    "host": "localhost",
+    "options": {
       "host": "localhost",
-      "options": {
-        "host": "localhost",
-        "dialect": "mysql",
-        "pool": {
-          "max": 5,
-          "min": 0,
-          "idle": 10000
-        }
+      "dialect": "mysql",
+      "pool": {
+        "max": 5,
+        "min": 0,
+        "idle": 10000
       }
     }
   },
   "production": {
     "static": "/static/build",
-    "database": {
-      "username": "sql11178536",
-      "password": "cznmKxTnY1",
-      "database": "sql11178536",
-      "options": {
-        "host": "sql11.freemysqlhosting.net",
-        "dialect": "mysql",
-        "pool": {
-          "max": 5,
-          "min": 0,
-          "idle": 10000
-        }
+    "username": "sql11178536",
+    "password": "cznmKxTnY1",
+    "database": "sql11178536",
+    "options": {
+      "host": "sql11.freemysqlhosting.net",
+      "dialect": "mysql",
+      "pool": {
+        "max": 5,
+        "min": 0,
+        "idle": 10000
       }
     }
   }

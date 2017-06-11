@@ -1,4 +1,4 @@
-wsRoomApp.factory('Games', function ($resource, baseUrl) {
+wsRoomApp.factory('Games', ['$resource', 'baseUrl', function ($resource, baseUrl) {
     return $resource(baseUrl + '/games/:controller/:id', {id: '@id'}, {
         create: {
             method: 'POST',
@@ -13,10 +13,6 @@ wsRoomApp.factory('Games', function ($resource, baseUrl) {
             params: {
                 controller: 'connect'
             }
-        },
-        query: {
-            method: 'GET',
-            isArray: true
         }
     });
-});
+}]);

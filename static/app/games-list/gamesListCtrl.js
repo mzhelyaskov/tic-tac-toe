@@ -1,4 +1,4 @@
-wsRoomApp.controller('gamesListCtrl', function ($scope, $socket, $location, Games) {
+wsRoomApp.controller('gamesListCtrl', ['$scope', '$socket', '$location', 'Games', function ($scope, $socket, $location, Games) {
 
     $scope.games = Games.query();
     $scope.waitingForOpponents = false;
@@ -25,4 +25,4 @@ wsRoomApp.controller('gamesListCtrl', function ($scope, $socket, $location, Game
             $scope.message = data.message;
         });
     };
-});
+}]);

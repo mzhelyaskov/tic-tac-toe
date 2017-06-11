@@ -20,8 +20,6 @@ module.exports = function(sequelize, DataTypes) {
                 authorize: function(username, callback) {
                     User.findOrCreate({where: {username: username}})
                         .spread(function (user, created) {
-                            console.log(user);
-                            console.log(created);
                             callback(null, user);
                         });
                 }
