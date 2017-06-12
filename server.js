@@ -66,7 +66,10 @@ app.post('/api/users/login', function (req, res, next) {
     User.authorize(req.body.username, function (err, user) {
         if (err) {
             if (typeof err === 'string') {
-                res.json({message: err});
+                res.json({
+                    success: false,
+                    message: err
+                });
             } else {
                 next(err);
             }
@@ -74,17 +77,22 @@ app.post('/api/users/login', function (req, res, next) {
         }
         req.session.userId = user.id;
         req.session.authenticated = true;
-        res.json({user: user});
+        res.json({
+            success: true,
+            user: new UserDto(user)
+        });
     });
+});
+
+app.post('/api/users/logout', function (req, res, next) {
+    //TODO очистить все игры связанные с юзером
+    req.session.destroy();
+    res.end();
 });
 
 app.get('/api/users/logged-in', function (req, res) {
     User.findById(req.session.userId).then(function (user) {
-        user = user || {};
-        res.json({
-            id: user.id,
-            username: user.username
-        });
+        res.json(new UserDto(user || {}));
     });
 });
 /*************** END API v.1 ******************/
@@ -95,7 +103,10 @@ app.get("/*", function (req, res) {
 
 
 
-
+function UserDto(user) {
+    this.id = user.id;
+    this.username = user.username;
+}
 
 function GameDto(game) {
     this.id = game.id;

@@ -1,19 +1,10 @@
-wsRoomApp.service('UserService', function (Users, $q) {
+'use strict';
 
-    this.login = function (loginParams) {
-        return Users.login(loginParams).$promise
-            .then(function (data) {
-                if (data.message) {
-                    return $q.reject(data.message);
-                }
-                return data.user;
-            });
-    };
+wsRoomApp.service('UserService', function (Users) {
 
-    this.getLoggedIn = function () {
-        return Users.getLoggedIn().$promise
-            .then(function (user) {
-                return user;
-            });
+    this.getLoggedIn = function (callback) {
+        return Users.getLoggedIn().$promise.then(function (user) {
+            callback(user.id ? user.toJSON() : null);
+        });
     };
 });

@@ -6,6 +6,12 @@ wsRoomApp.factory('Users', function ($resource, baseUrl) {
                 controller: 'login'
             }
         },
+        logout: {
+            method: 'POST',
+            params: {
+                controller: 'logout'
+            }
+        },
         getLoggedIn: {
             method: 'GET',
             params: {
