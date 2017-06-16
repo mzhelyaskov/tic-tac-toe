@@ -12,7 +12,7 @@ wsRoomApp.factory('Users', function ($resource, baseUrl) {
                 controller: 'logout'
             }
         },
-        getLoggedIn: {
+        loggedIn: {
             method: 'GET',
             params: {
                 controller: 'logged-in'

@@ -58,8 +58,12 @@ app.get('/api/games', function (req, res) {
 });
 
 app.get('/api/games/:id', function (req, res) {
-    var gameId = req.params.id;
-    res.json(new GameDto(games[gameId]));
+    var game = games[req.params.id];
+    if (game) {
+        res.json(new GameDto(game));
+    } else {
+        res.json();
+    }
 });
 
 app.post('/api/users/login', function (req, res, next) {
@@ -110,12 +114,12 @@ function UserDto(user) {
 
 function GameDto(game) {
     this.id = game.id;
-    this.owner = game.owner.username;
+    this.owner = game.owner;
     this.size = game.size;
     this.locked = game.locked;
     this.board = game.board;
+    this.chat = game.chat;
 }
-
 
 function createSquareMatrix(size) {
     return crateMatrix(size, size);
@@ -132,6 +136,13 @@ function crateMatrix(row, col) {
     return arr;
 }
 
+function getCurrentTime() {
+    var date = new Date();
+    var hours = ('00' + date.getHours()).slice(-2);
+    var seconds = ('00' + date.getSeconds()).slice(-2);
+    return hours + ':' + seconds;
+}
+
 function Cell(row, col) {
     this.row = row;
     this.col = col;
@@ -140,20 +151,18 @@ function Cell(row, col) {
 
 function Player(user) {
     this.id = user.id;
-    this.user = user;
     this.symbol = null;
-    this.game = null;
-    this.rival = null;
+    this.rivalId = null;
 }
 
-Player.prototype.setRival = function (rival) {
-    this.rival = rival;
-};
+function MessageContainer(username) {
+    this.sender = username;
+    this.messages = [];
+}
 
-function Message(params) {
-    this.player = params.player;
-    this.text = params.text;
-    this.date = new Date();
+function Message(text) {
+    this.text = text;
+    this.time = getCurrentTime();
 }
 
 var GAME_STATUS = {
@@ -167,37 +176,63 @@ function Game(params) {
     this.status = GAME_STATUS.OPEN;
     this.locked = !!params.password;
     this.password = params.password;
+    this.size = params.size;
     this.board = createSquareMatrix(params.size || 15);
     this.symbols = ['X', 'O'].sort(function randomSort() {
         return Math.random() - 0.5;
     });
-    this.players = {};
+    this.players = [];
     this.nextTurn = null;
-    this.messages = [];
+    this.chat = [];
 }
 
 Game.prototype.turn = function (playerId, row, col) {
     var cell = this.board[row][col];
-    var player = this.players[playerId];
+    var gamers = this.getPlayerAndRival(playerId);
+    var player = gamers.player;
+    var rival = gamers.rival;
     if (player !== this.nextTurn || cell.value) {
         return false;
     }
     cell.value = player.symbol;
-    this.nextTurn = player.rival;
+    this.nextTurn = rival;
     return true;
 };
 
-Game.prototype.addMessage = function (player, text) {
-    this.messages.push(new Message({
-        player: player,
-        text: text
-    }));
+Game.prototype.getPlayerAndRival = function (playerId) {
+    var result = {};
+    this.players.forEach(function (player) {
+        var key = player.id === playerId ? 'player' : 'rival';
+        result[key] = player;
+    });
+    return result;
+};
+
+function getOrCreateMessageContainer(chat, username) {
+    var container = chat[chat.length - 1];
+    if (container && container.sender === username) {
+        return container;
+    }
+    container = new MessageContainer(username);
+    chat.push(container);
+    return container;
+}
+
+Game.prototype.addMessage = function (username, message) {
+    var container = getOrCreateMessageContainer(this.chat, username);
+    container.messages.push(message);
+};
+
+Game.prototype.getPlayer = function (playerId) {
+    return this.players.find(function (player) {
+        return player.id === playerId;
+    });
 };
 
 Game.prototype.addPlayer = function (player) {
     player.game = this;
     player.symbol = this.symbols.pop();
-    this.players[player.id] = player;
+    this.players.push(player);
 };
 
 Game.prototype.changeStatus = function (status) {
@@ -205,16 +240,21 @@ Game.prototype.changeStatus = function (status) {
 };
 
 Game.prototype.setRivalReferences = function () {
-    var players = [];
-    for (var key in this.players) {
-        players.push(this.players[key]);
-    }
-    //TODO add asserts length 2
-    var player1 = players[0];
-    var player2 = players[1];
-    player1.setRival(player2);
-    player2.setRival(player1);
+    var player1 = this.players[0];
+    var player2 = this.players[1];
+    player1.rivalId = player2.id;
+    player2.rivalId = player1.id;
 };
+
+
+
+
+
+
+
+
+
+
 
 
 var games = {};
@@ -275,7 +315,7 @@ io.on('connection', function (socket) {
 
     socket.on('games:create', function (params, callback) {
         var game = new Game({
-            owner: user,
+            owner: user.username,
             locked: !!params.password,
             password: params.password,
             size: params.size
@@ -299,7 +339,8 @@ io.on('connection', function (socket) {
             callback({message: 'Game already is full'});
             return;
         }
-        game.addPlayer(new Player(user));
+        var player = new Player(user);
+        game.addPlayer(player);
         game.setRivalReferences();
         socket.join(gameId);
         game.changeStatus(GAME_STATUS.CLOSED);
@@ -312,6 +353,14 @@ io.on('connection', function (socket) {
             socket.broadcast.to(game.id).emit('games:turn', {board: game.board});
             callback({board: game.board});
         }
+    });
+
+    socket.on('chat:message', function (data, callback) {
+        var game = games[data.gameId];
+        var message = new Message(data.text);
+        game.addMessage(user.username, message);
+        socket.broadcast.to(game.id).emit('chat:message', game.chat);
+        callback(game.chat);
     });
 });
 

@@ -17,5 +17,7 @@ var wsRoomApp = angular.module('ws_room', [
         when('/games/:id', {
             templateUrl: 'app/game-board/gameBoard.html',
             controller: 'gameBoardCtrl'
+        }).otherwise({
+            redirectTo: '/login'
         });
 });

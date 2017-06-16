@@ -4,7 +4,7 @@ wsRoomApp.controller('mainCtrl', function ($scope, $location, $rootScope, AuthSe
     $rootScope.globals = {};
 
     $rootScope.$on('$locationChangeStart', function (event, next, current) {
-        UserService.getLoggedIn(function (loggedIn) {
+        UserService.getLoggedIn().then(function (loggedIn) {
             $rootScope.globals.user = loggedIn;
             var restrictedPage = $.inArray($location.path(), ['/login']) === -1;
             if (restrictedPage && !loggedIn) {
@@ -13,9 +13,7 @@ wsRoomApp.controller('mainCtrl', function ($scope, $location, $rootScope, AuthSe
             }
             if (!restrictedPage && loggedIn) {
                 $location.path('/games');
-                return;
             }
-            $location.path(loggedIn ? '/games' : '/login');
         });
     });
 

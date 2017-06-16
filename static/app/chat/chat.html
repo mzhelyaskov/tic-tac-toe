@@ -1,10 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div>
+    <div class="chat-controls">
+        <div class="input-group well" id="typing-field">
+            <input type="text" ng-model="text" ng-keydown="sendMessage($event)"
+                   class="form-control" placeholder="Enter Your messege"/>
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" ng-click="sendMessage()">Send</button>
+            </span>
+        </div>
+    </div>
+    <div class="chat">
+        <div ng-repeat="container in chat"
+             class='message-container'
+             ng-class="{'my-container': isRival(container), 'rival-container': !isRival(container)}">
+            <img ng-if="container.sender === player.username" class="chat-avatar" src="">
+            <div ng-repeat="message in container.messages" class="">
+                <div class="message"
+                     ng-class="{'my-message': isRival(container), 'rival-message': !isRival(container)}">
+                    {{message.text}}
+                </div>
+                <time class="chat-time">{{message.time}}</time>
+            </div>
+        </div>
+    </div>
+</div>

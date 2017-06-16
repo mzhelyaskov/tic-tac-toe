@@ -1,4 +1,3 @@
-<script src="gameFieldCtrl.js"></script>
 <div class="container">
     <div class="row">
         <div class="col-lg-7">
@@ -6,7 +5,7 @@
                 <form class="form-inline">
                     <div class="form-group">
                         <label for="size">Size: </label>
-                        <select name="size" id="size" ng-model="game.size" class="form-control">
+                        <select name="size" id="size" ng-model="size" class="form-control">
                             <option value="15">15 x 15</option>
                             <option value="17">17 x 17</option>
                             <option value="21">21 x 21</option>
@@ -69,48 +68,9 @@
             </ul>
             <!-- Tab panes -->
             <div class="tab-content g-tab-content">
-                <div role="tabpanel" class="tab-pane active" id="Chat">
-                    <div class="chat-controls">
-                        <div class="input-group well" id="typing-field">
-                            <input type="text" class="form-control" placeholder="Enter Your messege">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">Send</button>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="chat-messages-block">
-                        <div class="chat-message-container">
-                            <img class="chat-avatar" src="images/profile-photo.jpg">
-                            <div class="chat-message-container">
-                                <div class="chat-message my-messege">Hey. You juset reminded me my childhood. A
-                                    speacially this game. I love it
-                                </div>
-                                <time class="chat-time">11:13</time>
-                            </div>
-                            <div class="chat-message-container">
-                                <div class="chat-message my-messege">
-                                    Message 1 or maybe 2, I don't know honestly.<br>
-                                    Lorem ipsum dollar ya lyublyu.
-                                </div>
-                                <time class="chat-time">11:14</time>
-                            </div>
-                        </div>
-                        <div class="chat-oponent-messege-container">
-                            <div class="chat-message-container">
-                                <div class="chat-message oponent-messege">What the heck Mark is coding?</div>
-                                <time class="chat-time">11:13</time>
-                            </div>
-                            <div class="chat-oponent-messege-container">
-                                <div class="chat-message oponent-messege">
-                                    You know, sometimes he does well, but now..
-                                </div>
-                                <time class="chat-time">11:14</time>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div role="tabpanel" class="tab-pane" id="History">...</div>
-                <div role="tabpanel" class="tab-pane" id="Preferences">...</div>
+                <message-chat role="tabpanel" class="tab-pane active" player="user" chat="game.chat"></message-chat>
+                <div role="tabpanel" class="tab-pane">...</div>
+                <div role="tabpanel" class="tab-pane">...</div>
             </div>
         </div>
     </div>

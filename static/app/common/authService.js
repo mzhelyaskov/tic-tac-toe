@@ -15,8 +15,4 @@ wsRoomApp.service('AuthService', function (Users, $location, $rootScope) {
             $location.path('/login');
         });
     };
-
-    this.isAuthorized = function (callback) {
-        UserService.getLoggedIn(callback);
-    };
 });

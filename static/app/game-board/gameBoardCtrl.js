@@ -3,8 +3,11 @@ wsRoomApp.controller('gameBoardCtrl', function ($scope, $socket, $location, $rou
         if (user.id) $scope.user = user;
     });
     var gameId = $routeParams['id'];
-    Games.get({id: gameId}, function (game) {
-        $scope.game = game;
+    $scope.game = Games.get({id: gameId}, function () {
+        if (!$scope.game.id) {
+            $location.path('/games');
+        }
+        $scope.size = $scope.game.size;
     });
 
     $scope.turn = function (cell) {

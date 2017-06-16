@@ -1,7 +1,7 @@
 #game-field {
     border-collapse: collapse;
     margin: 0 auto;
-    font-size: 25px;
+    font-size: 20px;
 }
 
 #game-field tr td {
@@ -56,25 +56,26 @@
     width: 25px;
 }
 
-.chat-messages-block {
+.chat {
     position: relative;
     height: 400px;
+    overflow-y: auto;
 }
 
-.chat-message {
+.chat .message {
     border-radius: 5px;
     padding: 5px;
     color: #000000;
 }
 
-.my-messege {
+.chat .my-message {
     background-color: #d0effb;
-    margin: 0 60px 5px 60px;
+    margin: 0 60px 3px 60px;
 }
 
-.oponent-messege {
+.chat .rival-message {
     background-color: #e8e8e8;
-    margin: 0 100px 5px 20px;
+    margin: 0 100px 3px 20px;
 }
 
 
@@ -84,8 +85,9 @@
 }
 
 
-.chat-message-container {
+.chat .message-container {
     position: relative;
+    padding-bottom: 13px;
 }
 
 .chat-oponent-messege-container {
