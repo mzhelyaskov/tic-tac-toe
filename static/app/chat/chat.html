@@ -12,7 +12,7 @@
         <div ng-repeat="container in chat"
              class='message-container'
              ng-class="{'my-container': isRival(container), 'rival-container': !isRival(container)}">
-            <img ng-if="container.sender === player.username" class="chat-avatar" src="">
+            <img ng-if="container.sender !== player.username" class="chat-avatar" src="">
             <div ng-repeat="message in container.messages" class="">
                 <div class="message"
                      ng-class="{'my-message': isRival(container), 'rival-message': !isRival(container)}">
