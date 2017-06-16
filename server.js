@@ -368,19 +368,3 @@ var port = process.env.PORT || 5000;
 http.listen(port, function () {
     console.log('listening on port: ' + port);
 });
-
-
-//var waitRoom = 'wait_room';
-//io.in(waitRoom).clients(function(error, clients){
-//    if (error) throw error;
-//    //console.log(clients); // => [6em3d4TJP8Et9EMNAAAA, G5p55dHhGgUnLUctAAAB]
-//});
-
-// socket.on('games:getAvailable', function (data, callback) {
-//     callback(games);
-// });
-//socket.broadcast.to(waitRoom).emit('message', {
-//    userId: userId,
-//});
-//socket.join(waitRoom, function(){
-//});
